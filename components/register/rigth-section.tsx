@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader } from "../ui/card"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { useState } from "react"
+import { toast } from "sonner"
 
 
 export const RightSection = () => {
@@ -18,7 +19,7 @@ export const RightSection = () => {
     const [telefone, setTelefone] = useState("")
     const [pais, setPais] = useState("")
     const [localidade, setLocalidade] = useState("")
-    const [role, setRole] = useState("")
+    
 
     const changeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value) {
@@ -84,19 +85,11 @@ export const RightSection = () => {
         }
     }
 
-    const changeRole = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.value) {
-            setRole(e.target.value)
-        } else {
-            setRole("")
-        }
-    }
-
 
     const handleRegister = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault()
 
-        await fetch(
+        const response = await fetch(
             "http://localhost:8080/users/create",
             {
                 method: "POST",
@@ -112,12 +105,21 @@ export const RightSection = () => {
                     telefone: telefone,
                     pais: pais,
                     localidade: localidade,
-                    role: role
+                    role: "cliente",
+                    enebled: true,
                 })
             }
-        ).then((response) => {
-            console.log(response.json())
-        })
+        )
+
+        if (response.status === 200) {
+            toast.success("Utilizador criado com sucesso")
+
+            if(typeof window !== "undefined") {
+                window.location.href = "/login"
+            }
+        } else {
+            toast.error("Não foi possível criar conta, tente novamente")
+        }
     }
 
     console.log({
@@ -129,7 +131,6 @@ export const RightSection = () => {
         telefone: telefone,
         pais: pais,
         localidade: localidade,
-        role: role
     })
 
     return (
@@ -194,12 +195,6 @@ export const RightSection = () => {
                                 value={localidade}
                                 onChange={changeLocalidade} />
                         </div>
-                        <div className="flex flex-col gap-2">
-                            <Label>Role</Label>
-                            <Input type="text" placeholder="client or provider" className="py-2 text-lg h-10"
-                                value={role}
-                                onChange={changeRole} />
-                        </div>
 
                         <button
                             onClick={handleRegister}
@@ -210,7 +205,7 @@ export const RightSection = () => {
 
                     <div>
                         <span className="text-sm text-gray-500"> Already have an account?</span>
-                        <Link href="/register" className="text-[#13A4EC] font-semibold hover:underline">
+                        <Link href="/login" className="text-[#13A4EC] font-semibold hover:underline">
                             Sign In
                         </Link>
                     </div>

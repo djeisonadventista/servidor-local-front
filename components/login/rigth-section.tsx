@@ -5,6 +5,8 @@ import { Card, CardContent, CardHeader } from "../ui/card"
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { useState } from "react"
+import { toast } from "sonner"
+import { log } from "util"
 
 
 export const RightSection = () => {
@@ -32,7 +34,7 @@ export const RightSection = () => {
     const handleLogin = async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         //fetch API
-        await fetch(
+        const response = await fetch(
             "http://localhost:8080/users/login",
             {
                 method: "POST",
@@ -40,10 +42,20 @@ export const RightSection = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({ email: email, password: password })
-            }
-        ).then((response) => {
-            console.log(response.json())
-        })
+            })
+            if(response.status === 200) {
+                toast.success("Login realizado com sucesso")
+
+                const responseData = await response.json()
+
+                console.log({"dados recebidos": responseData})
+
+                    if(typeof window !== "undefined") { 
+                        window.location.href = "/home"
+                    }else {
+                        toast.error("Não foi possível redirecionar para a página inicial")
+                    }
+                }
     }
     console.log({ email: email, password: password })
 
