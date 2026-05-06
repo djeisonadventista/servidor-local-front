@@ -6,7 +6,9 @@ import { Input } from "../ui/input"
 import { Label } from "../ui/label"
 import { useState } from "react"
 import { toast } from "sonner"
-import { log } from "util"
+import { Button } from "../ui/button"
+import {setCookie} from "nookies"
+import path from "path"
 
 
 export const RightSection = () => {
@@ -50,6 +52,17 @@ export const RightSection = () => {
 
                 console.log({"dados recebidos": responseData})
 
+// salvar dados no cookies       
+setCookie(null, "token", responseData.data.token, {   
+    maxAge: 60 * 60 * 24 * 7,  
+    path: "/", 
+})   
+
+setCookie(null, "user", JSON.stringify(responseData.data.user), {   
+    maxAge: 60 * 60 * 24 * 7,
+    path: "/",
+})
+
                     if(typeof window !== "undefined") { 
                         window.location.href = "/home"
                     }else {
@@ -80,11 +93,11 @@ export const RightSection = () => {
                                 value={password}
                                 onChange={changePassword} />
                         </div>
-                        <button
+                        <Button
                             onClick={handleLogin}
                             className="bg-[#13A4EC] rounded-md text-white p-2 font-bold py-3 drop-shadow-lg drop-shadow-gray-200">
                             Login
-                        </button>
+                        </Button>
                     </div>
 
                     <div>

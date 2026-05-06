@@ -11,7 +11,7 @@ import { toast } from "sonner"
 export const RightSection = () => {
 
     //useState
-    const [Name, setName] = useState("")
+    const [Nome, setNome] = useState("")
     const [numero_identidade, setNumeroIdentidade] = useState("")
     const [data_nascimento, setDataNascimento] = useState("")
     const [email, setEmail] = useState("")
@@ -23,9 +23,9 @@ export const RightSection = () => {
 
     const changeName = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.value) {
-            setName(e.target.value)
+            setNome(e.target.value)
         } else {
-            setName("")
+            setNome("")
         }
     }
 
@@ -97,7 +97,7 @@ export const RightSection = () => {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    Name: Name,
+                    nome: Nome,
                     numero_identidade: numero_identidade,
                     data_nascimento: data_nascimento,
                     email: email,
@@ -123,7 +123,7 @@ export const RightSection = () => {
     }
 
     console.log({
-        Name: Name,
+        nome: Nome,
         numero_identidade: numero_identidade,
         data_nascimento: data_nascimento,
         email: email,
@@ -148,7 +148,7 @@ export const RightSection = () => {
                         <div className="flex flex-col gap-2">
                             <Label>Name</Label>
                             <Input type="text" placeholder="John Doe" className="py-2 text-lg h-10"
-                                value={Name}
+                                value={Nome}
                                 onChange={changeName} />
                         </div>
                         <div className="flex flex-col gap-2">
@@ -159,7 +159,7 @@ export const RightSection = () => {
                         </div>
                         <div className="flex flex-col gap-2">
                             <Label>Data Nascimento</Label>
-                            <Input type="date" placeholder="01/01/1990" className="py-2 text-lg h-10"
+                            <Input type="text" placeholder="dd-mm-yyyy" className="py-2 text-lg h-10"
                                 value={data_nascimento}
                                 onChange={changeDataNascimento} />
                         </div>
