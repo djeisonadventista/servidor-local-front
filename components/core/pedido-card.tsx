@@ -1,4 +1,5 @@
-import { Card, CardContent } from "../ui/card"
+import Image from "next/image"
+import { Card, CardContent, CardHeader } from "../ui/card"
 
 
 interface CategoriaType {
@@ -16,9 +17,38 @@ interface PedidoCardProps {
 
 export const PedidoCard = (pedidoCardProps: PedidoCardProps) => {
     return (
-        <Card>
+        <Card className="w-full h-[400px]">
+            <CardHeader>
+                <div className="w-full h-[200px] relative">
+                    <Image
+                        src={pedidoCardProps.image}
+                        alt={pedidoCardProps.title}
+                        fill 
+                        className="object-cover"
+                    />
+                    <div className="absolute top-1/2 left-1/2 bg-secondary/80 text-secondary p-2">
+                        <Image
+                            src={pedidoCardProps.category.icone}
+                            alt={pedidoCardProps.category.name}
+                            width={20}
+                            height={20}
+                        />
+                    </div>
+                </div>
+            </CardHeader>
             <CardContent>
-                <h1>Pedido</h1>
+                <div className="flex w-full items-center justify-between">
+                    <div>
+                        <span>Average Price:</span>
+                        <span>$100</span>
+                    </div>
+                    <Image
+                        src="/icons/arrow-right.svg"
+                        alt="Explore"
+                        width={20}
+                        height={20}
+                    />
+                </div>
             </CardContent>
         </Card>
     )
