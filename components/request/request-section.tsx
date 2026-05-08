@@ -12,22 +12,33 @@ import {
 
 import { Card, CardContent } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 
 export const RequestSection = () => {
 
     const [description, setDescription] = useState("")
 
-    const services = [
+    const [services, setServices] = useState([
         {
             id: 1,
             name: "Plumbing",
-            provider: "John's Plumbing (★★★★★)",
+            provider: "",
             urgent: false,
-            checked: true,
+            checked: false,
             icon: <Hammer className="text-[#1E73EA] w-5 h-5" />,
-            bg: "bg-blue-100"
+            bg: "bg-blue-100",
+            providers: [
+                "John's Plumbing (★★★★☆)",
+                "PipeFix Experts"
+            ]
         },
         {
             id: 2,
@@ -36,16 +47,24 @@ export const RequestSection = () => {
             urgent: false,
             checked: false,
             icon: <Zap className="text-[#D89B00] w-5 h-5" />,
-            bg: "bg-yellow-100"
+            bg: "bg-yellow-100",
+            providers: [
+                "Electric Pro Services",
+                "Volt Masters"
+            ]
         },
         {
             id: 3,
             name: "Carpentry",
-            provider: "Woodworks Pros (★★★★☆)",
-            urgent: true,
-            checked: true,
+            provider: "",
+            urgent: false,
+            checked: false,
             icon: <Paintbrush className="text-[#E28B00] w-5 h-5" />,
-            bg: "bg-orange-100"
+            bg: "bg-orange-100",
+            providers: [
+                "Carpenter's Delight",
+                "WoodCraft Masters"
+            ]
         },
         {
             id: 4,
@@ -54,9 +73,43 @@ export const RequestSection = () => {
             urgent: false,
             checked: false,
             icon: <BrushCleaning className="text-[#00A99D] w-5 h-5" />,
-            bg: "bg-cyan-100"
+            bg: "bg-cyan-100",
+            providers: [
+                "Clean Plus",
+                "Sparkle Services"
+            ]
         }
-    ]
+    ])
+
+    const toggleChecked = (id: number) => {
+        setServices(prev =>
+            prev.map(service =>
+                service.id === id
+                    ? { ...service, checked: !service.checked }
+                    : service
+            )
+        )
+    }
+
+    const toggleUrgent = (id: number) => {
+        setServices(prev =>
+            prev.map(service =>
+                service.id === id
+                    ? { ...service, urgent: !service.urgent }
+                    : service
+            )
+        )
+    }
+
+    const handleProviderChange = (id: number, value: string) => {
+        setServices(prev =>
+            prev.map(service =>
+                service.id === id
+                    ? { ...service, provider: value }
+                    : service
+            )
+        )
+    }
 
     return (
         <main className="max-w-5xl mx-auto py-16 px-5">
@@ -107,7 +160,10 @@ export const RequestSection = () => {
 
                             {/* CHECKBOX */}
                             <div>
-                                <Checkbox checked={item.checked} />
+                                <Checkbox
+                                    checked={item.checked}
+                                    onCheckedChange={() => toggleChecked(item.id)}
+                                />
                             </div>
 
                             {/* SERVICE */}
@@ -124,17 +180,36 @@ export const RequestSection = () => {
 
                             {/* PROVIDER */}
                             <div>
-                                <Input
+                                <Select
                                     value={item.provider}
-                                    placeholder="Select a provider..."
-                                    className="h-14 text-lg bg-white"
-                                    readOnly
-                                />
+                                    onValueChange={(value) =>
+                                        handleProviderChange(item.id, value)
+                                    }
+                                >
+
+                                    <SelectTrigger className="h-14 text-lg bg-white">
+
+                                        <SelectValue placeholder="Select a provider..." />
+
+                                    </SelectTrigger>
+
+                                    <SelectContent>
+                                        {item.providers.map((p) => (
+                                            <SelectItem key={p} value={p}>
+                                                {p}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+
+                                </Select>
                             </div>
 
                             {/* URGENT */}
                             <div className="flex justify-center">
-                                <Checkbox checked={item.urgent} />
+                                <Checkbox
+                                    checked={item.urgent}
+                                    onCheckedChange={() => toggleUrgent(item.id)}
+                                />
                             </div>
                         </div>
                     ))}
@@ -154,7 +229,7 @@ export const RequestSection = () => {
                 </div>
 
                 <Textarea
-                    placeholder="Please describe the issue in detail. For example: 'The kitchen sink is leaking continuously from the U-bend' or 'Need two custom wooden shelves built for the living room.'"
+                    placeholder="Please describe the issue in detail..."
                     className="min-h-[180px] resize-none text-lg p-5"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -171,7 +246,7 @@ export const RequestSection = () => {
                 <button
                     className="bg-[#0D8CEB] hover:bg-[#0B7ED4] transition-all rounded-2xl px-12 py-5 text-white font-bold text-2xl flex items-center gap-3 shadow-lg shadow-blue-100"
                 >
-                    <Send className="w-6 h-6 fill-white" />
+                    <Send className="w-6 h-6 text-white" />
 
                     Request Quotation
                 </button>
