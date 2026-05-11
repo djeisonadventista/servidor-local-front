@@ -10,7 +10,6 @@ import { toast } from "sonner"
 import { parseCookies } from "nookies"
 
 export const RequestSection = () => {
-
     const [description, setDescription] = useState("")
     const [selectedService, setSelectedService] = useState<number | null>(null)
 
@@ -45,10 +44,6 @@ export const RequestSection = () => {
         }
     ])
 
-    const toggleChecked = (id: number) => {
-        setSelectedService(id)
-    }
-
     const toggleUrgent = (id: number) => {
         setServices(prev =>
             prev.map(service =>
@@ -60,9 +55,7 @@ export const RequestSection = () => {
     }
 
     const handlerequest = async () => {
-
         try {
-
             const cookies = parseCookies()
 
             if (!cookies.user) {
@@ -87,13 +80,12 @@ export const RequestSection = () => {
             }
 
             const orcamentoPayload = {
-
                 total: "500",
                 id_utilizadores: user.id,
                 enabled: true
             }
 
-            console.log("ORCAMENTO:", orcamentoPayload)
+        
 
             const orcamentoResponse = await fetch(
                 "http://localhost:8080/orcamento/create",
@@ -108,17 +100,13 @@ export const RequestSection = () => {
             )
 
             if (orcamentoResponse.status !== 200) {
-
-                toast.success("Orcamento criado com sucesso")
+                toast.error("Erro ao criar orçamento")
                 return
             }
 
             const orcamentoData = await orcamentoResponse.json()
-
-            console.log("ORCAMENTO RESPONSE:", orcamentoData)
             
             const payload = {
-
                 designacao: description || serviceSelected.name,
                 subtotal: "0",
                 horas_estimadas: "0",
@@ -128,8 +116,6 @@ export const RequestSection = () => {
                 id_orcamento: orcamentoData.id,
                 enabled_at: true
             }
-
-            console.log("PAYLOAD:", payload)
 
             const response = await fetch(
                 "http://localhost:8080/prestacao-servico/create",
@@ -144,42 +130,29 @@ export const RequestSection = () => {
             )
 
             if (response.status === 200) {
-
                 toast.success("Pedido enviado com sucesso")
-
                 setDescription("")
                 setSelectedService(null)
-
                 setServices(prev =>
-                    prev.map(service => ({
-                        ...service,
-                        urgent: false
-                    }))
+                    prev.map(service => ({ ...service, urgent: false }))
                 )
-
             } else {
-
                 toast.error("Erro ao enviar pedido")
             }
 
         } catch (error) {
-
-            console.log(error)
-
+            console.error(error)
             toast.error("Erro no servidor")
         }
     }
 
     return (
         <main className="max-w-5xl mx-auto py-16 px-5">
-
             {/* TITLE */}
             <div className="flex flex-col gap-3 mb-10">
-
                 <h1 className="text-5xl font-bold text-[#0E1525]">
                     Public Service Request
                 </h1>
-
                 <p className="text-xl text-[#6B7A99]">
                     Select the service you need and submit your request.
                 </p>
@@ -187,57 +160,39 @@ export const RequestSection = () => {
 
             {/* TABLE */}
             <Card className="rounded-2xl border border-gray-200 shadow-none overflow-hidden">
-
                 <CardContent className="p-0">
-
-                    {/* TABLE HEADER */}
                     <div className="grid grid-cols-3 bg-[#F8FAFC] border-b border-gray-200 px-6 py-5">
-
-                        <span className="font-bold text-[#23304A] text-lg">
-                            SELECT
-                        </span>
-
-                        <span className="font-bold text-[#23304A] text-lg">
-                            SERVICE NAME
-                        </span>
-
-                        <span className="font-bold text-[#23304A] text-lg text-center">
-                            URGENT?
-                        </span>
+                        <span className="font-bold text-[#23304A] text-lg">SELECT</span>
+                        <span className="font-bold text-[#23304A] text-lg">SERVICE NAME</span>
+                        <span className="font-bold text-[#23304A] text-lg text-center">URGENT?</span>
                     </div>
 
-                    {/* TABLE ROWS */}
-                    <RadioGroup value={selectedService?.toString()}>
-
+                    {/* CORREÇÃO AQUI: onValueChange e fallback para string vazia */}
+                    <RadioGroup 
+                        value={selectedService?.toString() ?? ""} 
+                        onValueChange={(val) => setSelectedService(Number(val))}
+                    >
                         {services.map((item) => (
-
                             <div
                                 key={item.id}
                                 className="grid grid-cols-3 items-center border-b border-gray-200 px-6 py-5"
                             >
-
                                 {/* SELECT */}
                                 <div className="flex items-center gap-3">
-
                                     <RadioGroupItem
                                         value={item.id.toString()}
                                         id={`service-${item.id}`}
-                                        checked={selectedService === item.id}
-                                        onClick={() => toggleChecked(item.id)}
                                     />
-
-                                    <Label htmlFor={`service-${item.id}`}>
+                                    <Label htmlFor={`service-${item.id}`} className="cursor-pointer">
                                         Select
                                     </Label>
                                 </div>
 
                                 {/* SERVICE */}
                                 <div className="flex items-center gap-4">
-
                                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${item.bg}`}>
                                         {item.icon}
                                     </div>
-
                                     <span className="text-2xl text-[#0E1525]">
                                         {item.name}
                                     </span>
@@ -245,12 +200,11 @@ export const RequestSection = () => {
 
                                 {/* URGENT */}
                                 <div className="flex justify-center">
-
                                     <input
                                         type="checkbox"
                                         checked={item.urgent}
                                         onChange={() => toggleUrgent(item.id)}
-                                        className="w-5 h-5"
+                                        className="w-5 h-5 cursor-pointer"
                                     />
                                 </div>
                             </div>
@@ -261,23 +215,18 @@ export const RequestSection = () => {
 
             {/* DESCRIPTION */}
             <div className="mt-14 flex flex-col gap-5">
-
                 <div className="flex items-center gap-3">
-
                     <Menu className="w-5 h-5 text-[#52607A]" />
-
                     <span className="text-2xl font-bold text-[#0E1525]">
                         Service Description & Notes
                     </span>
                 </div>
-
                 <Textarea
                     placeholder="Please describe the issue in detail..."
                     className="min-h-[180px] resize-none text-lg p-5"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                 />
-
                 <span className="text-[#6B7A99] flex items-center gap-2 text-sm">
                     ⓘ Detailed descriptions help provide more accurate requests.
                 </span>
@@ -285,13 +234,11 @@ export const RequestSection = () => {
 
             {/* BUTTON */}
             <div className="flex justify-end mt-20">
-
                 <button
                     onClick={handlerequest}
                     className="bg-[#0D8CEB] hover:bg-[#0B7ED4] transition-all rounded-2xl px-12 py-5 text-white font-bold text-2xl flex items-center gap-3 shadow-lg shadow-blue-100"
                 >
                     <Send className="w-6 h-6 text-white" />
-
                     Request Quotation
                 </button>
             </div>
