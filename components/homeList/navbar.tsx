@@ -23,7 +23,7 @@ export const Navbar = () => {
                         <Search className="w-4 h-4 text-gray-400" />
 
                         <input
-                            type="text"
+                            type="text" 
                             placeholder="Search services..."
                             className="bg-transparent outline-none text-sm ml-2 w-full"
                         />
