@@ -105,6 +105,8 @@ export const RequestSection = () => {
             }
 
             const orcamentoData = await orcamentoResponse.json()
+
+            console.log({"dados do orçamento criado": orcamentoData})
             
             const payload = {
                 designacao: description || serviceSelected.name,
@@ -113,8 +115,12 @@ export const RequestSection = () => {
                 id_servico: selectedService,
                 preco_hora: "0",
                 estado: "Pendente",
-                id_orcamento: orcamentoData.id,
-                enabled_at: true
+                id_orcamento: orcamentoData.data.id,
+                id_prestador: null,
+                enabled: true,
+                urgente: serviceSelected.urgent,
+                id_empresa: null,
+                tipo_prestador: "particular"
             }
 
             const response = await fetch(
